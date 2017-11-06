@@ -7,6 +7,7 @@ package herocard.client;
  */
 public class Client {
     public static void main(String[] args) {
-        Menu menu = new Menu();
-    }    
+        // Boots GUI.
+        Menu.getInstance();
+    }
 }

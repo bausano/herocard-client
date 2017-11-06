@@ -1,24 +1,46 @@
 package herocard.client;
 
+import java.awt.Color;
 import javax.swing.*;
 import javax.swing.border.*;
 
-public class Frame extends JFrame {    
+/**
+ * Abstract GUI frame with default graphics.
+ * 
+ * @author michael
+ */
+public abstract class Frame extends JFrame {
+    /**
+     * __construct
+     * @param width Width of frame in pixels.
+     * @param height Height of frame in pixels.
+     */
     public Frame(int width, int height) {
         super("HeroCard");
         
-        this.setVisible(true);
-        
+        // Sets default background color to gray.
+        setBackground(Color.LIGHT_GRAY);
+                
         // Setting window size in px.
-        this.setSize(width, height);
+        setSize(width, height);
         
         // Booting the close button.
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         // Centering the window.
-        this.setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
+        
+        // Displays the window.
+        setVisible(true);
     }
     
+    /**
+     * Adds a margin to given window component. With buttons this function
+     * behaves like a padding.
+     * 
+     * @param component Component of the window.
+     * @param size Array of int as follows [top, left, bottom, right].
+     */
     protected void addMargin(JComponent component, int[] size) {
         Border border = component.getBorder();
         

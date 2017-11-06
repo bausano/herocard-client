@@ -2,12 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/client/Game.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/client/Menu.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/client/events/NewGame.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/client/Client.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/client/Frame.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

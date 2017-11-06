@@ -3,38 +3,64 @@ package herocard.client;
 import javax.swing.*;
 import java.awt.*;
 import herocard.client.events.*;
+import java.awt.event.ActionListener;
 
+/**
+ * Initial GUI Menu.
+ * 
+ * @author michael
+ */
 public class Menu extends Frame {
-    public static Menu instance = null;
+    /**
+     * Singelton instance.
+     */
+    public static Menu instance = new Menu();
     
-    private final JLabel heading = new JLabel("HeroCard");
+    /**
+     * Heading text.
+     */
+    public final JLabel heading = new JLabel("HeroCard");
     
-    private final JButton newGame = new JButton("New game"),
-                          connectToGame = new JButton("Connect to game");
+    /**
+     * New game button opens a new window game window.
+     */
+    private final JButton newGame = new JButton("New game");
     
-    public Menu() {
+    /**
+     * Connect to game button opens a new search game window.
+     */
+    private final JButton connectToGame = new JButton("Connect to game");
+    
+    /**
+     * Exit button disposes window.
+     */
+    private final JButton closeWindow = new JButton("Exit");
+    
+    /**
+     * __constructor
+     */
+    private Menu() {
+        // Inits a new frame with given size.
         super(400, 600);
-        
-        instance = this;
         
         // Sets layout and background color.
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-        
-        getContentPane().setBackground(Color.LIGHT_GRAY);
    
-        // Inits the menu elements.
+        // Prints the header.
         header();
         
-        newGameButton();
+        /**
+         * Displays action buttons with appropriate listener.
+         */
+        prepareButton(this.newGame, new NewGameListener());
         
-        // Creates space after button.
-        add(Box.createRigidArea(new Dimension(0, 50)));
+        prepareButton(this.connectToGame, new SearchGameListener());
         
-        connectButton();
+        prepareButton(this.closeWindow, new CloseWindowListener(this));
     }
     
     /**
-     * Adds a styled header with margin.
+     * Positions a styled header with margin.
      */
     public final void header() {
         heading.setFont(new Font("Serif", Font.BOLD, 40));
@@ -49,29 +75,34 @@ public class Menu extends Frame {
         add(heading);
     }
     
-    public final void newGameButton() {
-        newGame.setAlignmentX(Component.CENTER_ALIGNMENT);
+    /**
+     * Prepares a button and displays it.
+     * @param button JFrame button to display.
+     * @param listener Listener to call on button click.
+     */
+    public final void prepareButton(JButton button, ActionListener listener) {
+        // Aligns button to the center of the frame.
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         // Adds a margin inside the button so that the button gets bigger.
-        addMargin(newGame, new int[]{5, 5, 5, 5});
+        addMargin(button, new int[]{5, 5, 5, 5});
         
-        add(newGame);
+        // Attaches listener to the button.
+        button.addActionListener(listener);
         
-        newGame.addActionListener(new NewGame());
+        // Displays button.
+        add(button);
+        
+        // Puts a margin after the button.
+        add(Box.createRigidArea(new Dimension(0, 50)));
     }
     
-    public final void connectButton() {
-        connectToGame.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        addMargin(connectToGame, new int[]{5, 5, 5, 5});
-        
-        add(connectToGame);
-    }
-    
+    /**
+     * Returns a singelton instance.
+     * 
+     * @return Menu JFrame.
+     */
     public static Menu getInstance() {
-      if(instance == null) {
-         instance = new Menu();
-      }
       return instance;
    }
 }

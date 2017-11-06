@@ -3,11 +3,9 @@ package herocard.client.events;
 import java.awt.event.*;
 import herocard.client.*;
 
-public class NewGame implements ActionListener {
+public class SearchGameListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent event) {
-        Menu menu = Menu.getInstance();
-        
-        // close menu open game
+        System.out.print("opening search game window");
     }    
 }
