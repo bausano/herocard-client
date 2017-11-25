@@ -1,8 +1,10 @@
-package herocard.client;
+package herocard.gui;
 
+import herocard.gui.events.NewGameListener;
+import herocard.gui.events.CloseWindowListener;
+import herocard.gui.events.SearchGameListener;
 import javax.swing.*;
 import java.awt.*;
-import herocard.client.events.*;
 import java.awt.event.ActionListener;
 
 /**
@@ -57,6 +59,9 @@ public class Menu extends Frame {
         prepareButton(this.connectToGame, new SearchGameListener());
         
         prepareButton(this.closeWindow, new CloseWindowListener(this));
+        
+        // Displays the window.
+        setVisible(true);
     }
     
     /**

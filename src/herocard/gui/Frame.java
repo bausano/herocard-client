@@ -1,4 +1,4 @@
-package herocard.client;
+package herocard.gui;
 
 import java.awt.Color;
 import javax.swing.*;
@@ -29,9 +29,6 @@ public abstract class Frame extends JFrame {
         
         // Centering the window.
         setLocationRelativeTo(null);
-        
-        // Displays the window.
-        setVisible(true);
     }
     
     /**

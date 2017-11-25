@@ -1,7 +1,7 @@
-package herocard.client.events;
+package herocard.gui.events;
 
+import herocard.gui.Frame;
 import java.awt.event.*;
-import herocard.client.*;
 
 /**
  * Closes a frame.
