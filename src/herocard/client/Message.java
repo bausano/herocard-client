@@ -57,7 +57,13 @@ public class Message {
      * @return
      */
     public Thread send(Callback cb) {
-        request.body = command + ";" + arguments + Message.DELIMITER;
+        request.body = command;
+        
+        if (arguments != null) {
+            request.body += ";" + arguments;
+        }
+        
+        request.body += Message.DELIMITER;
         
         return request.spawn(cb);
     }

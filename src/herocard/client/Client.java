@@ -1,16 +1,28 @@
 package herocard.client;
-import java.io.IOException;
+
+import herocard.events.Disconnected;
+import herocard.listeners.DisconnectedListener;
 
 /**
  * Main network connection class.
  * 
  * @author michael
  */
-public class Client {
+public class Client implements DisconnectedListener {
     /**
      * Protocol handler.
      */
     private static Connection conn;
+    
+    /**
+     * Host name of a server.
+     */
+    private static String host;
+    
+    /**
+     * Port a server is listening on.
+     */
+    private static Integer port;
     
     /**
      * Creates a new instance of Message with current connection and given command.
@@ -27,9 +39,24 @@ public class Client {
      * 
      * @param host Address of host server.
      * @param port Port on which host server is listening.
-     * @throws java.io.IOException
      */
-    public static void connect(String host, Integer port) throws IOException {
+    public static void connect(String host, Integer port) {
+        Disconnected.event().addListener(new Client());
+        
+        Client.host = host;
+        
+        Client.port = port;
+        
         Client.conn = new Connection(host, port);
+    }
+    
+    /**
+     * Attempts to revive the connection if the thread is dead.
+     */
+    @Override
+    public void onConnectionLost() {
+        if (! conn.t.isAlive()) {
+            Client.conn = new Connection(host, port);
+        }
     }
 }

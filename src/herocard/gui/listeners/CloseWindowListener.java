@@ -1,4 +1,4 @@
-package herocard.gui.events;
+package herocard.gui.listeners;
 
 import herocard.gui.Frame;
 import java.awt.event.*;

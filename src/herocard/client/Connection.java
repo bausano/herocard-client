@@ -1,15 +1,19 @@
 package herocard.client;
 
+import herocard.events.Connected;
+import herocard.events.Disconnected;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 /**
+ * This class should be exported to an interface.
  *
  * @author michael
  */
-public class Connection {
+public final class Connection implements Runnable {
     /**
      * TCP socket.
      */
@@ -25,26 +29,57 @@ public class Connection {
      */
     private final Integer port;
     
+    public Thread t;
+    
     /**
      * 
      * @param host
      * @param port
-     * @throws IOException 
      */
-    public Connection(String host, Integer port) throws IOException {
+    public Connection(String host, Integer port) {
         this.host = host;
         
         this.port = port;
+
+        attempToConnect();
+    }
+    
+    /**
+     * Starts a new thread for attempting the connection.
+     */
+    public void attempToConnect() {
+        t = new Thread(this);
         
-        this.init();
+        t.start();
+    }
+
+    /**
+     * Attempts to connect to server every seconds until program is stopped or
+     * connection established.
+     */
+    @Override
+    public void run() {
+        do {
+            try {
+                connect();
+                
+                if (! isConnected()) {
+                    TimeUnit.SECONDS.sleep(1);
+                }
+            } catch (IOException | InterruptedException ex) {
+                Disconnected.event().trigger();
+            }
+        } while(! isConnected());
+        
+        Connected.event().trigger();
     }
     
     /**
      * Establishes a connection with the server.
      * 
-     * @throws IOException 
+     * @throws java.io.IOException
      */
-    private void init() throws IOException {
+    private void connect() throws IOException {
         socket = new Socket(host, port);
 
         socket.setKeepAlive(true);
@@ -66,5 +101,17 @@ public class Connection {
      */
     public InputStream in() throws IOException {
         return socket.getInputStream();
+    }
+    
+    /**
+     * 
+     * @return True if connection with server is established. 
+     */
+    public Boolean isConnected() {
+        if (socket == null) {
+            return false;
+        }
+        
+        return socket.isConnected();
     }
 }

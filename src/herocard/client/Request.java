@@ -1,6 +1,6 @@
 package herocard.client;
 
-import herocard.exceptions.ExceptionHandler;
+import herocard.events.Disconnected;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -57,29 +57,34 @@ public class Request implements Runnable {
     @Override
     public void run() {
         try {
-            send(body);
+            if (! conn.isConnected()) {
+                throw new IOException();
+            }
+            
+            send();
             
             String response = read();
             
             resolve.call(response);
         } catch (IOException ex) {
-            ExceptionHandler._catch(ex);
+            Disconnected.event().trigger();
         }
     }
     
-    private void send(String body) throws IOException {
+    private void send() throws IOException {
         DataOutputStream out = new DataOutputStream(conn.out());
         
-        out.writeBytes(this.body);
+        out.writeBytes(body);
     }
     
     private String read() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(conn.in()));
         
-              String line;
+        String line;
 
         String acc = "";
 
+        // Read the input stream until it is ended with delimiter.
         while(! (line = reader.readLine()).endsWith(Message.DELIMITER)) {
             acc += line;
         }

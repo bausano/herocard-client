@@ -1,8 +1,12 @@
 package herocard.gui;
 
-import herocard.gui.events.NewGameListener;
-import herocard.gui.events.CloseWindowListener;
-import herocard.gui.events.SearchGameListener;
+import herocard.client.Callback;
+import herocard.client.Client;
+import herocard.gui.listeners.NewGameListener;
+import herocard.gui.listeners.CloseWindowListener;
+import herocard.gui.listeners.SearchGameListener;
+import herocard.listeners.ConnectedListener;
+import herocard.listeners.DisconnectedListener;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -12,7 +16,7 @@ import java.awt.event.ActionListener;
  * 
  * @author michael
  */
-public class Menu extends Frame {
+public class Menu extends Frame implements DisconnectedListener, ConnectedListener {
     /**
      * Singelton instance.
      */
@@ -22,6 +26,11 @@ public class Menu extends Frame {
      * Heading text.
      */
     public final JLabel heading = new JLabel("HeroCard");
+    
+    /**
+     * Footer text.
+     */
+    public final JLabel footer = new JLabel("");
     
     /**
      * New game button opens a new window game window.
@@ -60,6 +69,9 @@ public class Menu extends Frame {
         
         prepareButton(this.closeWindow, new CloseWindowListener(this));
         
+        // Prints the header.
+        footer();
+        
         // Displays the window.
         setVisible(true);
     }
@@ -78,6 +90,22 @@ public class Menu extends Frame {
         addMargin(heading, new int[]{20, 0, 100, 0});
 
         add(heading);
+    }
+        
+    /**
+     * Positions a styled footer with margin.
+     */
+    public final void footer() {
+        footer.setFont(new Font("Serif", Font.ITALIC, 13));
+
+        footer.setForeground(Color.RED);
+
+        footer.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Adds a margin around layout.
+        addMargin(footer, new int[]{100, 0, 20, 0});
+
+        add(footer);
     }
     
     /**
@@ -100,6 +128,24 @@ public class Menu extends Frame {
         
         // Puts a margin after the button.
         add(Box.createRigidArea(new Dimension(0, 50)));
+    }
+    
+    @Override
+    public void onConnectionLost() {
+        footer.setForeground(Color.RED);
+        
+        footer.setText("Attempting to reconnect ...");
+    }
+
+    @Override
+    public void onConnectionEstablished() {
+        footer.setForeground(Color.GREEN);
+        
+        Callback cb = (String response) -> {
+            footer.setText("Connected as " + response);
+        };
+
+        Client.message("getuser").args("michael").send(cb);
     }
     
     /**
