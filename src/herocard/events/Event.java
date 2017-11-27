@@ -1,73 +1,38 @@
 package herocard.events;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
- *
+ * Each event must extend Event class.
+ * 
  * @author michael
  */
-public class Event {
+abstract class Event {
     /**
-     * Event register.
+     * List of an event listeners.
      */
-    private static final HashMap<String, Triggable> events = new HashMap() {{
-        put("connected", new Connected());
-        put("disconnected", new Disconnected());
-    }};
+    protected ArrayList<Object> listeners = new ArrayList();
     
     /**
-     * Add a listener object for an event.
+     * Listener should implement following method.
      * 
-     * @param listener
-     * @param e 
+     * @return Annotation of method that shall be called on listener object.
      */
-    public static void addListenerToEvent(Object listener, String e) {
-        if (! events.containsKey(e)) {
-            return;
-        }
-        
-        Triggable event = events.get(e);
-        
-        event.addListener(listener);
+    public abstract String method();
+    
+    /**
+     * @return List of an event listeners.
+     */
+    public ArrayList<Object> getListeners() {
+        return listeners;
     }
     
     /**
-     * Dispatches given event name to event listeners.
+     * Adds an object as a listener.
      * 
-     * @param e 
+     * @param listener 
      */
-    public static void dispatch(String e) {
-        if (! events.containsKey(e)) {
-            return;
-        }
-        
-        Triggable event = events.get(e);
-        
-        String method = event.method();
-        
-        ArrayList<Object> listeners = event.getListeners();
-        
-        listeners.forEach((listener) -> {
-            try {
-                triggerListenerMethod(listener, method);
-            } catch(Exception ex) {
-                System.err.println(ex.getMessage());
-            }
-        });
-    }
-    
-    /**
-     * Calls listening method on listener.
-     * 
-     * @param listener
-     * @param method
-     * @throws Exception 
-     */
-    private static void triggerListenerMethod(Object listener, String method) throws Exception {
-        Method trigger = listener.getClass().getDeclaredMethod(method);
-        
-        trigger.invoke(listener);
+    public void addListener(Object listener) {
+        listeners.add(listener);
     }
 }

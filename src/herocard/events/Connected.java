@@ -1,29 +1,27 @@
 package herocard.events;
 
 import herocard.gui.Menu;
-import java.util.ArrayList;
 
 /**
- *
+ * Connected event is triggered every time a connection with server is established.
+ * 
  * @author michael
  */
-public class Connected implements Triggable {
-    private final ArrayList<Object> listeners = new ArrayList() {{
-        add(Menu.getInstance());
-    }};
+public class Connected extends Event {
+    /**
+     * List of objects that listen to this event.
+     */
+    public Connected() {
+        listeners.add(Menu.getInstance());
+    }
     
+    /**
+     * Listener should implement following method.
+     * 
+     * @return Annotation of method that shall be called on listener object.
+     */
     @Override
     public String method() {
         return "onConnectionEstablished";
-    }
-    
-    @Override
-    public ArrayList<Object> getListeners() {
-        return listeners;
-    }
-    
-    @Override
-    public void addListener(Object listener) {
-        listeners.add(listener);
     }
 }
