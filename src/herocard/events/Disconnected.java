@@ -1,34 +1,31 @@
 package herocard.events;
 
+import herocard.client.Client;
 import herocard.gui.Menu;
-import herocard.listeners.DisconnectedListener;
 import java.util.ArrayList;
 
 /**
  *
  * @author michael
  */
-public class Disconnected implements Event {
-    private static final Disconnected instance = new Disconnected();
-
-    private final ArrayList<DisconnectedListener> listeners = new ArrayList() {{
+public class Disconnected implements Triggable {
+   private final ArrayList<Object> listeners = new ArrayList() {{
         add(Menu.getInstance());
+        add(new Client());
     }};
     
     @Override
-    public void trigger() {
-        int size = listeners.size();
-        
-        for(int x = 0; x < size; x++) {
-            listeners.get(x).onConnectionLost();
-        }
+    public String method() {
+        return "onConnectionLost";
     }
     
-    public void addListener(DisconnectedListener listener) {
-        listeners.add(listener);
+    @Override
+    public ArrayList<Object> getListeners() {
+        return listeners;
     }
-
-    public static Disconnected event() {
-        return instance;
+    
+    @Override
+    public void addListener(Object listener) {
+        listeners.add(listener);
     }
 }

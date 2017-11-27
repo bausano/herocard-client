@@ -1,6 +1,6 @@
 package herocard.client;
 
-import herocard.events.Disconnected;
+import herocard.events.Event;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -67,7 +67,7 @@ public class Request implements Runnable {
             
             resolve.call(response);
         } catch (IOException ex) {
-            Disconnected.event().trigger();
+            Event.dispatch("disconnected");
         }
     }
     

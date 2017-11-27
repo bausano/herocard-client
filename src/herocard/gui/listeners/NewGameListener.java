@@ -4,7 +4,8 @@ import herocard.client.Callback;
 import herocard.client.Client;
 import herocard.gui.Menu;
 import herocard.gui.Game;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class NewGameListener implements ActionListener {
     @Override
@@ -13,7 +14,7 @@ public class NewGameListener implements ActionListener {
             Menu.getInstance().heading.setText(response);
         };
 
-        Client.message("print").send(cb);
+        Client.message("message1").send(cb);
         //Menu.getInstance().dispose();
         
         // TODO: Open window "Wait for another player".
