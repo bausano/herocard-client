@@ -22,8 +22,9 @@ public class Message {
      */
     private String arguments;
     
+    
     /**
-     * Runnable Request instance.
+     * Request instance.
      */
     public Request request;
     
@@ -51,12 +52,24 @@ public class Message {
     }
     
     /**
+     * Optionally request can have different priority.
+     * By default, priority is 5.
+     * 
+     * @param priority Priority on scale 1 - 10.
+     * @return 
+     */
+    public Message priority(Integer priority) {
+        request.priority = priority;
+        
+        return this;
+    }
+    
+    /**
      * Executes query.
      * 
      * @param cb Lambda with one string argument - response body.
-     * @return
      */
-    public Thread send(Callback cb) {
+    public void send(Callback cb) {
         request.body = command;
         
         if (arguments != null) {
@@ -65,6 +78,8 @@ public class Message {
         
         request.body += Message.DELIMITER;
         
-        return request.spawn(cb);
+        request.resolve = cb;
+        
+        request.conn.spawn(request);
     }
 }

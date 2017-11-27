@@ -11,21 +11,26 @@ import java.io.InputStreamReader;
  *
  * @author michael
  */
-public class Request implements Runnable {
+public class Request {
     /**
      * Body of a request.
      */
     public String body;
     
     /**
-     * Lambda that's called with response body as argument.
+     * Priority of request, preferably in values 1 - 10.
      */
-    private Callback resolve;
+    public Integer priority = 5;
+    
+    /**
+     * Lambda that's called with response body as argument. 
+     */
+    Callback resolve;
     
     /**
      * Protocol connection.
      */
-    private final Connection conn;
+    public final Connection conn;
     
     /**
      * 
@@ -36,47 +41,38 @@ public class Request implements Runnable {
     }
     
     /**
-     * Starts the sending process on a new thread.
-     * 
-     * @param cb
-     * @return 
+     * Starts the sending process.
+     * @throws java.io.IOException
      */
-    public Thread spawn(Callback cb) {
-        resolve = cb;
-
-        Thread t = new Thread(this);
-
-        t.start();
-
-        return t;
-    }
-
-    /**
-     * Sends the request and waits for a response.
-     */
-    @Override
-    public void run() {
-        try {
-            if (! conn.isConnected()) {
-                throw new IOException();
-            }
-            
-            send();
-            
-            String response = read();
-            
-            resolve.call(response);
-        } catch (IOException ex) {
-            Emitor.dispatch("disconnected");
+    public void execute() throws IOException {
+        if (! conn.isConnected()) {
+            throw new IOException();
         }
+
+        send();
+
+        String response = read();
+
+        resolve.call(response);
     }
     
+    /**
+     * Sends request body on server.
+     * 
+     * @throws IOException 
+     */
     private void send() throws IOException {
         DataOutputStream out = new DataOutputStream(conn.out());
         
         out.writeBytes(body);
     }
     
+    /**
+     * Reads response body from server.
+     * 
+     * @return Response body.
+     * @throws IOException 
+     */
     private String read() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(conn.in()));
         
@@ -90,5 +86,14 @@ public class Request implements Runnable {
         }
         
         return acc;
+    }
+    
+    /**
+     * Returns priority for comparing in PriorityQueue.
+     * 
+     * @return Priority integer.
+     */
+    public Integer getPriority() {
+        return priority;
     }
 }

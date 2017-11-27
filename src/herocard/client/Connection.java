@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -28,7 +30,15 @@ public final class Connection implements Runnable {
      */
     private final Integer port;
     
+    /**
+     * Socket communication connecting.
+     */
     public Thread t;
+    
+    /**
+     * Queue of requests to send.
+     */
+    public PriorityQueue<Request> queue;
     
     /**
      * 
@@ -39,14 +49,16 @@ public final class Connection implements Runnable {
         this.host = host;
         
         this.port = port;
+        
+        this.queue = new PriorityQueue<>(Comparator.comparing(Request::getPriority));
 
-        attempToConnect();
+        start();
     }
     
     /**
      * Starts a new thread for attempting the connection.
      */
-    public void attempToConnect() {
+    public void start() {
         t = new Thread(this);
         
         t.start();
@@ -58,19 +70,32 @@ public final class Connection implements Runnable {
      */
     @Override
     public void run() {
-        do {
-            try {                
+        // TODO: Flag
+        while (true) {
+            try {
                 if (! isConnected()) {
+                    connect();
+
                     TimeUnit.SECONDS.sleep(1);
                 }
-                
-                connect();
-            } catch (IOException | InterruptedException ex) {
+
+                Request req = queue.poll();
+
+                if (req == null) {
+                    continue;
+                }
+
+                req.execute();
+
+                //Emitor.dispatch("connected");
+            } catch(IOException | InterruptedException ex) {
                 Emitor.dispatch("disconnected");
             }
-        } while(! isConnected());
-        
-        Emitor.dispatch("connected");
+        }
+    }
+    
+    public void spawn(Request req) {
+        queue.add(req);
     }
     
     /**

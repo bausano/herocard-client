@@ -2,17 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/gui/Main.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/gui/listeners/NewGameListener.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/client/Connection.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/events/Connected.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/gui/Menu.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/events/Disconnected.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/client/Message.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/client/Client.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/client/Request.java</file>
-            <file>file:/home/michael/Code/herocard-client/src/herocard/events/Event.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
