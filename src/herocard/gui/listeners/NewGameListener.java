@@ -14,7 +14,9 @@ public class NewGameListener implements ActionListener {
             Menu.getInstance().heading.setText(response);
         };
 
-        Client.message("message1").send(cb);
+        Client.message("message1").priority(8).send(cb);
+        
+        Client.message("message2").send(cb);
         //Menu.getInstance().dispose();
         
         // TODO: Open window "Wait for another player".

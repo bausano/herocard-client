@@ -1,6 +1,5 @@
 package herocard.client;
 
-import herocard.events.Emitor;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.io.InputStreamReader;
  *
  * @author michael
  */
-public class Request {
+public class Request implements Comparable<Request> {
     /**
      * Body of a request.
      */
@@ -52,7 +51,9 @@ public class Request {
         send();
 
         String response = read();
-
+        
+        System.out.println(response);
+        
         resolve.call(response);
     }
     
@@ -95,5 +96,15 @@ public class Request {
      */
     public Integer getPriority() {
         return priority;
+    }
+
+    /**
+     * Comparing for PriorityBlockingQueue.
+     * @param t Request
+     * @return
+     */
+    @Override
+    public int compareTo(Request t) {
+        return t.priority.compareTo(priority);
     }
 }
