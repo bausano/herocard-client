@@ -5,8 +5,6 @@ import herocard.client.Client;
 import herocard.gui.listeners.NewGameListener;
 import herocard.gui.listeners.CloseWindowListener;
 import herocard.gui.listeners.SearchGameListener;
-import herocard.listeners.ConnectedListener;
-import herocard.listeners.DisconnectedListener;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -16,7 +14,7 @@ import java.awt.event.ActionListener;
  * 
  * @author michael
  */
-public class Menu extends Frame implements DisconnectedListener, ConnectedListener {
+public class Menu extends Frame {
     /**
      * Singelton instance.
      */
@@ -130,14 +128,12 @@ public class Menu extends Frame implements DisconnectedListener, ConnectedListen
         add(Box.createRigidArea(new Dimension(0, 50)));
     }
     
-    @Override
     public void onConnectionLost() {
         footer.setForeground(Color.RED);
         
         footer.setText("Attempting to reconnect ...");
     }
 
-    @Override
     public void onConnectionEstablished() {
         footer.setForeground(Color.GREEN);
         

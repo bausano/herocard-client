@@ -1,7 +1,6 @@
 package herocard.client;
 
-import herocard.events.Connected;
-import herocard.events.Disconnected;
+import herocard.events.Emitor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -60,18 +59,18 @@ public final class Connection implements Runnable {
     @Override
     public void run() {
         do {
-            try {
-                connect();
-                
+            try {                
                 if (! isConnected()) {
                     TimeUnit.SECONDS.sleep(1);
                 }
+                
+                connect();
             } catch (IOException | InterruptedException ex) {
-                Disconnected.event().trigger();
+                Emitor.dispatch("disconnected");
             }
         } while(! isConnected());
         
-        Connected.event().trigger();
+        Emitor.dispatch("connected");
     }
     
     /**

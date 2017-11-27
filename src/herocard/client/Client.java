@@ -1,14 +1,11 @@
 package herocard.client;
 
-import herocard.events.Disconnected;
-import herocard.listeners.DisconnectedListener;
-
 /**
  * Main network connection class.
  * 
  * @author michael
  */
-public class Client implements DisconnectedListener {
+public class Client {
     /**
      * Protocol handler.
      */
@@ -40,9 +37,7 @@ public class Client implements DisconnectedListener {
      * @param host Address of host server.
      * @param port Port on which host server is listening.
      */
-    public static void connect(String host, Integer port) {
-        Disconnected.event().addListener(new Client());
-        
+    public static void connect(String host, Integer port) {        
         Client.host = host;
         
         Client.port = port;
@@ -53,7 +48,6 @@ public class Client implements DisconnectedListener {
     /**
      * Attempts to revive the connection if the thread is dead.
      */
-    @Override
     public void onConnectionLost() {
         if (! conn.t.isAlive()) {
             Client.conn = new Connection(host, port);
