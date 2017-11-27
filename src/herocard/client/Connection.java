@@ -1,10 +1,11 @@
 package herocard.client;
 
-import herocard.events.Emitor;
+import herocard.events.Emitter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -13,6 +14,21 @@ import java.util.concurrent.TimeUnit;
  * @author michael
  */
 public final class Connection implements Runnable {
+    /**
+     * Socket communication connecting.
+     */
+    public Thread t;
+    
+    /**
+     * Queue of requests to send.
+     */
+    public volatile PriorityBlockingQueue<Request> queue = new PriorityBlockingQueue();
+    
+    /**
+     * Is true if last request was successful, otherwise false.
+     */
+    public Boolean established = false;
+    
     /**
      * TCP socket.
      */
@@ -28,7 +44,10 @@ public final class Connection implements Runnable {
      */
     private final Integer port;
     
-    public Thread t;
+    /**
+     * Flag breaking the cycle.
+     */
+    private Boolean running = true;
     
     /**
      * 
@@ -40,37 +59,61 @@ public final class Connection implements Runnable {
         
         this.port = port;
 
-        attempToConnect();
+        start();
     }
     
     /**
-     * Starts a new thread for attempting the connection.
+     * Starts a new thread for connection.
      */
-    public void attempToConnect() {
+    public void start() {
         t = new Thread(this);
         
         t.start();
     }
 
     /**
-     * Attempts to connect to server every seconds until program is stopped or
-     * connection established.
+     * Connects to the server and handles communication.
      */
     @Override
     public void run() {
-        do {
-            try {                
-                if (! isConnected()) {
-                    TimeUnit.SECONDS.sleep(1);
-                }
-                
+        try {
+            // If the socket seems not to be connected to the server,
+            // attempt to establish a connection.
+            if (! isConnected()) {
+                TimeUnit.SECONDS.sleep(1);
+
                 connect();
-            } catch (IOException | InterruptedException ex) {
-                Emitor.dispatch("disconnected");
+
+                Emitter.dispatch("connected");
             }
-        } while(! isConnected());
+
+            // Pops a request from the blocking queue.
+            Request req = queue.take();
+
+            if (req == null) {
+                return;
+            }
+
+            req.execute();
+        } catch(IOException | InterruptedException ex) {
+            established = false;
+
+            Emitter.dispatch("disconnected");
+        }
         
-        Emitor.dispatch("connected");
+        // Loops the method.
+        if (running) {
+            run();
+        }
+    }
+    
+    /**
+     * Adds a new request to the executing queue.
+     * 
+     * @param req 
+     */
+    public void spawn(Request req) {
+        queue.add(req);
     }
     
     /**
@@ -82,6 +125,8 @@ public final class Connection implements Runnable {
         socket = new Socket(host, port);
 
         socket.setKeepAlive(true);
+        
+        established = true;
     }
     
     /**
@@ -111,6 +156,21 @@ public final class Connection implements Runnable {
             return false;
         }
         
-        return socket.isConnected();
+        if (! socket.isConnected()) {
+            return false;
+        }
+        
+        return established;
+    }
+    
+    /**
+     * Breaks the connection.
+     */
+    public void disconnect() {
+        running = false;
+        
+        try {
+            socket.close();
+        } catch (IOException ex) { }
     }
 }

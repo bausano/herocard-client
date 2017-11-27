@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Event emitor global class handles distributing events to listeners.
+ * Event Emitter global class handles distributing events to listeners.
  * 
  * @author michael
  */
-public class Emitor {
+public class Emitter {
     /**
      * Events register.
      */
